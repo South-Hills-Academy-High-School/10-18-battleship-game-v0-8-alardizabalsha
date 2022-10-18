@@ -5,8 +5,9 @@ namespace SpriteKind {
     export const Boat2 = SpriteKind.create()
 }
 controller.up.onEvent(ControllerButtonEvent.Pressed, function () {
+    rotateflag = "npthing"
     grid.move(cursor, 0, -1)
-    grid.place(ghost_cursor, tiles.getTileLocation(grid.spriteCol(cursor), grid.spriteRow(cursor) + 1))
+    grid.place(ghost_cursor, tiles.getTileLocation(grid.spriteCol(cursor), grid.spriteRow(cursor) + -1))
 })
 controller.B.onEvent(ControllerButtonEvent.Pressed, function () {
     turnBoat(currentBoat)
@@ -21,20 +22,30 @@ controller.A.onEvent(ControllerButtonEvent.Pressed, function () {
     turnBoat(currentBoat)
 })
 controller.left.onEvent(ControllerButtonEvent.Pressed, function () {
+    rotateflag = "npthing"
     grid.move(cursor, 0, 1)
     grid.place(ghost_cursor, tiles.getTileLocation(grid.spriteCol(cursor), grid.spriteRow(cursor) + -1))
 })
 controller.right.onEvent(ControllerButtonEvent.Pressed, function () {
+    rotateflag = "npthing"
     grid.move(cursor, 1, 0)
-    grid.place(ghost_cursor, tiles.getTileLocation(grid.spriteCol(cursor) + -1, grid.spriteRow(cursor)))
+    grid.place(ghost_cursor, tiles.getTileLocation(grid.spriteRow(cursor) + -1, grid.spriteCol(cursor)))
 })
 function moveBoat (boatArray: any[]) {
     makeBoatVisible(boatArray)
     if (grid.spriteRow(cursor) >= 8 - boatArray.length && boatRotateArray[currentBoat] == "up") {
-        grid.move(cursor, 0, -1)
+        if (rotateflag) {
+            boatRotateArray[currentBoat] = rotateflag
+        } else {
+            grid.move(cursor, 0, -1)
+        }
     }
     if (grid.spriteCol(cursor) >= 11 - boatArray.length && boatRotateArray[currentBoat] == "sideways") {
-        grid.move(cursor, -1, 0)
+        if (rotateflag) {
+            boatRotateArray[currentBoat] = rotateflag
+        } else {
+            grid.move(cursor, -1, 0)
+        }
     }
     cursor.setFlag(SpriteFlag.Invisible, true)
     iterator = 0
@@ -48,8 +59,9 @@ function moveBoat (boatArray: any[]) {
     }
 }
 controller.down.onEvent(ControllerButtonEvent.Pressed, function () {
+    rotateflag = "npthing"
     grid.move(cursor, -1, 0)
-    grid.place(ghost_cursor, tiles.getTileLocation(grid.spriteCol(cursor) + 1, grid.spriteRow(cursor)))
+    grid.place(ghost_cursor, tiles.getTileLocation(grid.spriteRow(cursor) + 1, grid.spriteCol(cursor)))
 })
 function makeBoatInvisible (boatArray: Sprite[]) {
     for (let value3 of boatArray) {
@@ -82,8 +94,9 @@ let cursor: Sprite = null
 let boatSpriteArray: Sprite[][] = []
 let boatRotateArray: string[] = []
 let currentBoat = 0
+let rotateflag = ""
 tiles.setCurrentTilemap(tilemap`level1`)
-let rotateflag = "nothing"
+rotateflag = "nothing"
 currentBoat = 0
 boatRotateArray = ["up", "up", "up"]
 boatSpriteArray = [[sprites.create(img`
